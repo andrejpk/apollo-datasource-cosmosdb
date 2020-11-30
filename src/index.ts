@@ -1,3 +1,1 @@
-import { CosmosDataSource } from "./datasource";
-
-export default { CosmosDataSource };
+export { CosmosDataSource } from "./datasource";

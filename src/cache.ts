@@ -2,6 +2,7 @@ import { Container, Operation } from "@azure/cosmos";
 import { KeyValueCache } from "apollo-server-caching";
 import DataLoader from "dataloader";
 import { EJSON } from "bson";
+import { CosmosDataSourceOptions } from "./datasource";
 
 // https://github.com/graphql/dataloader#batch-function
 const orderDocs = <V>(ids: readonly string[]) => (
@@ -33,6 +34,7 @@ const orderDocs = <V>(ids: readonly string[]) => (
 export interface createCatchingMethodArgs {
   container: Container;
   cache: KeyValueCache;
+  options: CosmosDataSourceOptions;
 }
 
 export interface FindArgs {
@@ -40,10 +42,10 @@ export interface FindArgs {
 }
 
 export interface CachedMethods<DType> {
-  findOneById: (id: string, args: FindArgs) => Promise<DType | undefined>;
+  findOneById: (id: string, args?: FindArgs) => Promise<DType | undefined>;
   findManyByIds: (
     ids: string[],
-    args: FindArgs
+    args?: FindArgs
   ) => Promise<(DType | undefined)[]>;
   deleteFromCacheById: (id: string) => Promise<void>;
 }
@@ -51,15 +53,34 @@ export interface CachedMethods<DType> {
 export const createCachingMethods = <DType>({
   container,
   cache,
+  options,
 }: createCatchingMethodArgs): CachedMethods<DType> => {
   const loader = new DataLoader<string, DType>(async (ids) => {
-    const operations = ids.map<Operation>((id) => ({
-      operationType: "Read",
-      id,
-    }));
-    const response = await container.items.bulk(operations);
-    const responseDocs = response.map((r) =>
-      r.resourceBody ? ((r.resourceBody as unknown) as DType) : undefined
+    options?.logger?.debug(
+      `CosmosDataSource/DataLoader: loading for IDs: ${ids}`
+    );
+    // const operations = ids.map<Operation>((id) => ({
+    //   operationType: "Read",
+    //   id,
+    // }));
+    // const response = await container.items.bulk(operations);
+    const querySpec = {
+      query: `select * from c where c.id in (${ids
+        .map((id) => `'${id}'`)
+        .join(",")})`,
+      //   query: "select * from c where c.id in (@ids)",
+      //   parameters: [{ name: "@ids", value: ids }],
+    };
+    const response = await container.items.query(querySpec).fetchAll();
+
+    options?.logger?.debug(
+      `CosmosDataSource/DataLoader: response count: ${response.resources.length}`
+    );
+    options?.logger?.debug(
+      `data: ${JSON.stringify(response.resources[0], null, " ")}`
+    );
+    const responseDocs = response.resources.map((r) =>
+      r ? ((r as unknown) as DType) : undefined
     );
     return orderDocs<DType>(ids)(responseDocs);
   });
@@ -68,6 +89,7 @@ export const createCachingMethods = <DType>({
 
   const methods: CachedMethods<DType> = {
     findOneById: async (id, { ttl } = {}) => {
+      options?.logger?.debug(`CosmosDataSource: Running query for ID ${id}`);
       const key = cachePrefix + id;
 
       const cacheDoc = await cache.get(key);
@@ -84,8 +106,10 @@ export const createCachingMethods = <DType>({
       return doc;
     },
 
-    findManyByIds: (ids, args = {}) =>
-      Promise.all(ids.map((id) => methods.findOneById(id, args))),
+    findManyByIds: (ids, args = {}) => {
+      options?.logger?.debug(`CosmosDataSource: Running query for IDs ${ids}`);
+      return Promise.all(ids.map((id) => methods.findOneById(id, args)));
+    },
 
     deleteFromCacheById: async (id) => {
       loader.clear(id);

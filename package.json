@@ -1,8 +1,9 @@
 {
   "name": "apollo-datasource-cosmosdb",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An Apollo data source for Azure CosmosDB",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/andrejpk/apollo-datasource-cosmosdb",
   "author": "Andrej Kyselica",
   "license": "MIT",
