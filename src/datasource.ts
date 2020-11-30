@@ -1,11 +1,12 @@
 import { DataSource } from "apollo-datasource";
 import { ApolloError } from "apollo-server-errors";
 import { InMemoryLRUCache, KeyValueCache } from "apollo-server-caching";
-import { Container } from "@azure/cosmos";
+import { Container, SqlQuerySpec } from "@azure/cosmos";
 import { Logger } from "./helpers";
 
 import { isCosmosDbContainer } from "./helpers";
-import { createCachingMethods, CachedMethods } from "./cache";
+import { createCachingMethods, CachedMethods, FindArgs } from "./cache";
+import DataLoader from "dataloader";
 
 export interface CosmosDataSourceOptions {
   logger?: Logger;
@@ -15,7 +16,7 @@ const placeholderHandler = () => {
   throw new Error("DataSource not initialized");
 };
 
-export class CosmosDataSource<TData, TContext = any>
+export class CosmosDataSource<TData extends { id: string }, TContext = any>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
@@ -26,6 +27,20 @@ export class CosmosDataSource<TData, TContext = any>
   findOneById: CachedMethods<TData>["findOneById"] = placeholderHandler;
   findManyByIds: CachedMethods<TData>["findManyByIds"] = placeholderHandler;
   deleteFromCacheById: CachedMethods<TData>["deleteFromCacheById"] = placeholderHandler;
+  dataLoader: CachedMethods<TData>["dataLoader"];
+  primeCache: CachedMethods<TData>["primeCache"] = placeholderHandler;
+
+  // base SQL operations aren't cached so directly declared here
+  async findManyByQuery(query: SqlQuerySpec | string, { ttl }: FindArgs) {
+    const results = await this.container.items.query<TData>(query).fetchAll();
+    // prime these into the dataloader and maybe the cache
+    if (this.dataLoader && results.resources) {
+      results.resources.forEach((r) => {
+        this.primeCache(r, ttl);
+      });
+    }
+    return results.resources;
+  }
 
   constructor(container: Container, options: CosmosDataSourceOptions = {}) {
     super();

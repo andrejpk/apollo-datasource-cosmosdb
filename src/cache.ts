@@ -48,9 +48,11 @@ export interface CachedMethods<DType> {
     args?: FindArgs
   ) => Promise<(DType | undefined)[]>;
   deleteFromCacheById: (id: string) => Promise<void>;
+  dataLoader?: DataLoader<string, DType, string>;
+  primeCache: (item: DType, ttl?: number) => void;
 }
 
-export const createCachingMethods = <DType>({
+export const createCachingMethods = <DType extends { id: string }>({
   container,
   cache,
   options,
@@ -64,10 +66,9 @@ export const createCachingMethods = <DType>({
     //   id,
     // }));
     // const response = await container.items.bulk(operations);
+    const idList = ids.map((id) => `'${id}'`).join(",");
     const querySpec = {
-      query: `select * from c where c.id in (${ids
-        .map((id) => `'${id}'`)
-        .join(",")})`,
+      query: `select * from c where c.id in (${idList})`,
       //   query: "select * from c where c.id in (@ids)",
       //   parameters: [{ name: "@ids", value: ids }],
     };
@@ -115,6 +116,19 @@ export const createCachingMethods = <DType>({
       loader.clear(id);
       await cache.delete(cachePrefix + id);
     },
+    /**
+     * Loads an item into DataLoader and optionally the cache (if TTL is specified)
+     * Use this when running a query outside of the findOneById/findManyByIds methos
+     * that automatically and transparently do this
+     */
+    primeCache: (doc: DType, ttl?: number) => {
+      const key = doc.id;
+      loader.prime(key, doc);
+      if (ttl) {
+        cache.set(key, EJSON.stringify(doc), { ttl });
+      }
+    },
+    dataLoader: loader,
   };
 
   return methods;
