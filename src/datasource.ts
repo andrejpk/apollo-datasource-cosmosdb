@@ -30,8 +30,7 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
   dataLoader: CachedMethods<TData>["dataLoader"];
   primeCache: CachedMethods<TData>["primeCache"] = placeholderHandler;
 
-  // base SQL operations aren't cached so directly declared here
-  async findManyByQuery(query: SqlQuerySpec | string, { ttl }: FindArgs) {
+  async findManyByQuery(query: SqlQuerySpec | string, { ttl }: FindArgs = {}) {
     const results = await this.container.items.query<TData>(query).fetchAll();
     // prime these into the dataloader and maybe the cache
     if (this.dataLoader && results.resources) {

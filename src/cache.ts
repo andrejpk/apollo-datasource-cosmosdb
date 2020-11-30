@@ -68,9 +68,9 @@ export const createCachingMethods = <DType extends { id: string }>({
     // const response = await container.items.bulk(operations);
     const idList = ids.map((id) => `'${id}'`).join(",");
     const querySpec = {
-      query: `select * from c where c.id in (${idList})`,
-      //   query: "select * from c where c.id in (@ids)",
-      //   parameters: [{ name: "@ids", value: ids }],
+      //   query: `select * from c where c.id in (${idList})`,
+      query: "select * from c where ARRAY_CONTAINS(@ids, c.id)",
+      parameters: [{ name: "@ids", value: ids }],
     };
     const response = await container.items.query(querySpec).fetchAll();
 
