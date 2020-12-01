@@ -3,6 +3,7 @@ import { KeyValueCache } from "apollo-server-caching";
 import DataLoader from "dataloader";
 import { EJSON } from "bson";
 import { CosmosDataSourceOptions } from "./datasource";
+import { isArray } from "util";
 
 // https://github.com/graphql/dataloader#batch-function
 const orderDocs = <V>(ids: readonly string[]) => (
@@ -49,7 +50,7 @@ export interface CachedMethods<DType> {
   ) => Promise<(DType | undefined)[]>;
   deleteFromCacheById: (id: string) => Promise<void>;
   dataLoader?: DataLoader<string, DType, string>;
-  primeCache: (item: DType, ttl?: number) => void;
+  primeCache: (item: DType | DType[], ttl?: number) => void;
 }
 
 export const createCachingMethods = <DType extends { id: string }>({
@@ -117,16 +118,19 @@ export const createCachingMethods = <DType extends { id: string }>({
       await cache.delete(cachePrefix + id);
     },
     /**
-     * Loads an item into DataLoader and optionally the cache (if TTL is specified)
+     * Loads an item or items into DataLoader and optionally the cache (if TTL is specified)
      * Use this when running a query outside of the findOneById/findManyByIds methos
      * that automatically and transparently do this
      */
-    primeCache: (doc: DType, ttl?: number) => {
-      const key = doc.id;
-      loader.prime(key, doc);
-      if (ttl) {
-        cache.set(key, EJSON.stringify(doc), { ttl });
-      }
+    primeCache: (docs, ttl?: number) => {
+      docs = isArray(docs) ? docs : [docs];
+      docs.forEach((doc) => {
+        const key = doc.id;
+        loader.prime(key, doc);
+        if (ttl) {
+          cache.set(key, EJSON.stringify(doc), { ttl });
+        }
+      });
     },
     dataLoader: loader,
   };
