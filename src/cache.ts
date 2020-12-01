@@ -50,7 +50,7 @@ export interface CachedMethods<DType> {
   ) => Promise<(DType | undefined)[]>;
   deleteFromCacheById: (id: string) => Promise<void>;
   dataLoader?: DataLoader<string, DType, string>;
-  primeCache: (item: DType | DType[], ttl?: number) => void;
+  primeLoader: (item: DType | DType[], ttl?: number) => void;
 }
 
 export const createCachingMethods = <DType extends { id: string }>({
@@ -122,7 +122,7 @@ export const createCachingMethods = <DType extends { id: string }>({
      * Use this when running a query outside of the findOneById/findManyByIds methos
      * that automatically and transparently do this
      */
-    primeCache: (docs, ttl?: number) => {
+    primeLoader: (docs, ttl?: number) => {
       docs = isArray(docs) ? docs : [docs];
       docs.forEach((doc) => {
         const key = doc.id;

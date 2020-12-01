@@ -28,15 +28,13 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
   findManyByIds: CachedMethods<TData>["findManyByIds"] = placeholderHandler;
   deleteFromCacheById: CachedMethods<TData>["deleteFromCacheById"] = placeholderHandler;
   dataLoader: CachedMethods<TData>["dataLoader"];
-  primeCache: CachedMethods<TData>["primeCache"] = placeholderHandler;
+  primeLoader: CachedMethods<TData>["primeLoader"] = placeholderHandler;
 
   async findManyByQuery(query: SqlQuerySpec | string, { ttl }: FindArgs = {}) {
     const results = await this.container.items.query<TData>(query).fetchAll();
     // prime these into the dataloader and maybe the cache
     if (this.dataLoader && results.resources) {
-      results.resources.forEach((r) => {
-        this.primeCache(r, ttl);
-      });
+      this.primeLoader(results.resources, ttl);
     }
     return results.resources;
   }
