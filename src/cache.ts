@@ -62,29 +62,16 @@ export const createCachingMethods = <DType extends { id: string }>({
     options?.logger?.debug(
       `CosmosDataSource/DataLoader: loading for IDs: ${ids}`
     );
-    // const operations = ids.map<Operation>((id) => ({
-    //   operationType: "Read",
-    //   id,
-    // }));
-    // const response = await container.items.bulk(operations);
-    const idList = ids.map((id) => `'${id}'`).join(",");
     const querySpec = {
-      //   query: `select * from c where c.id in (${idList})`,
       query: "select * from c where ARRAY_CONTAINS(@ids, c.id)",
       parameters: [{ name: "@ids", value: ids }],
     };
-    const response = await container.items.query(querySpec).fetchAll();
+    const response = await container.items.query<DType>(querySpec).fetchAll();
 
     options?.logger?.debug(
       `CosmosDataSource/DataLoader: response count: ${response.resources.length}`
     );
-    options?.logger?.debug(
-      `data: ${JSON.stringify(response.resources[0], null, " ")}`
-    );
-    const responseDocs = response.resources.map((r) =>
-      r ? ((r as unknown) as DType) : undefined
-    );
-    return orderDocs<DType>(ids)(responseDocs);
+    return orderDocs<DType>(ids)(response.resources);
   });
 
   const cachePrefix = `cosmos-${container.url}-`;
