@@ -1,4 +1,4 @@
-import { CosmosDataSource } from "./datasource";
+import { CosmosDataSource, QueryFindArgs } from "./datasource";
 import { FindArgs } from "./cache";
 
-export { CosmosDataSource, FindArgs };
+export { CosmosDataSource, FindArgs, QueryFindArgs };
