@@ -6,7 +6,6 @@ import { Logger } from "./helpers";
 
 import { isCosmosDbContainer } from "./helpers";
 import { createCachingMethods, CachedMethods, FindArgs } from "./cache";
-import DataLoader from "dataloader";
 
 export interface CosmosDataSourceOptions {
   logger?: Logger;
@@ -40,7 +39,7 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
   primeLoader: CachedMethods<TData>["primeLoader"] = placeholderHandler;
 
   /**
-   * Same as findManyByQuery but returns the entire CosmosDB response which is sometimes useful
+   *
    * @param query
    * @param param1
    */
@@ -58,7 +57,42 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     if (this.dataLoader && results.resources) {
       this.primeLoader(results.resources, ttl);
     }
+    this.options?.logger?.info(
+      `CosmosDataSource.findManyByQuery: complete. rows: ${results.resources.length}, RUs: ${results.requestCharge}, hasMoreResults: ${results.hasMoreResults}`
+    );
     return results;
+  }
+
+  async createOne(newDoc: TData, options: QueryFindArgs = {}) {
+    const { requestOptions } = options;
+    const response = await this.container.items.create<TData>(
+      newDoc,
+      requestOptions
+    );
+    return response;
+  }
+
+  async deleteOne(id: string) {
+    const response = await this.container.item(id).delete();
+    return response;
+  }
+
+  async updateOne(updDoc: TData) {
+    const response = await this.container.item(updDoc.id).replace(updDoc);
+    return response;
+  }
+
+  async updateOnePartial(id: string, contents: Partial<TData>) {
+    this.options?.logger?.debug(
+      `Updating doc id ${id} contents: ${JSON.stringify(contents, null, "")}`
+    );
+    const item = this.container.item(id, id);
+    const docItem = await item.read<TData>();
+    const { resource } = docItem;
+    const newResource = { ...resource, ...contents, id } as TData; // don't change the ID ever
+    const replaceResult = await item.replace<TData>(newResource);
+
+    return replaceResult;
   }
 
   constructor(container: Container, options: CosmosDataSourceOptions = {}) {
