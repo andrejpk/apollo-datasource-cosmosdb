@@ -69,6 +69,9 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
       newDoc,
       requestOptions
     );
+    if (response.resource) {
+      this.primeLoader(response.resource, options.ttl);
+    }
     return response;
   }
 
@@ -77,6 +80,7 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
       `CosmosDataSource/deleteOne: deleting id: '${id}'`
     );
     const response = await this.container.item(id, id).delete<TData>();
+    await this.deleteFromCacheById(id);
     return response;
   }
 
@@ -84,6 +88,9 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     const response = await this.container
       .item(updDoc.id, updDoc.id)
       .replace(updDoc);
+    if (response.resource) {
+      this.primeLoader(response.resource);
+    }
     return response;
   }
 
@@ -96,6 +103,9 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     const { resource } = docItem;
     const newResource = { ...resource, ...contents, id } as TData; // don't change the ID ever
     const replaceResult = await item.replace<TData>(newResource);
+    if (replaceResult.resource) {
+      this.primeLoader(replaceResult.resource);
+    }
 
     return replaceResult;
   }
