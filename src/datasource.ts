@@ -73,12 +73,17 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
   }
 
   async deleteOne(id: string) {
-    const response = await this.container.item(id).delete();
+    this.options?.logger?.info(
+      `CosmosDataSource/deleteOne: deleting id: '${id}'`
+    );
+    const response = await this.container.item(id, id).delete<TData>();
     return response;
   }
 
   async updateOne(updDoc: TData) {
-    const response = await this.container.item(updDoc.id).replace(updDoc);
+    const response = await this.container
+      .item(updDoc.id, updDoc.id)
+      .replace(updDoc);
     return response;
   }
 
