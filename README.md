@@ -4,7 +4,7 @@ This is a CosmosDB DataSource for the Apollo GraphQL Server. It was adapted from
 
 ## Usage
 
-Use by creating a new class, inheriting from `CosmsosDBDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API)
+Use by creating a new class, inheriting from `CosmsosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API)
 
 `data-sources/Users.ts`
 
@@ -16,6 +16,7 @@ export class UserDataSource extends CosmosDataSource<UserDoc, ApolloContext> {}
 
 ```typescript
 import { CosmosClient } from "@azure/cosmos";
+import { CosmosDataSource } from "apollo-datasource-cosmosdb";
 
 const cosmosClient = new CosmosClient({
   endpoint: "https://my-cosmos-db.documents.azure.com:443/",
@@ -96,7 +97,7 @@ This library is written in Typescript and exports full type definitions, but usa
 
 ```typescript
 
-const thisUser = await users.findOneById(id: string, {ttl})  // => Promise<T>
+const thisUser = await users.findOneById(id: string, {ttl})  // => Promise<T | undefined>
 
 const userPair = await users.findManyByIds([id1, id2], {ttl}) // => Promise<(T | undefined)[]>
 
