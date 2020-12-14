@@ -15,8 +15,8 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
           # Defaults to the user or organization that owns the workflow file
           # scope: '@octocat'
-      - run: yarn
-      - run: yarn build
+      - run: npm
+      - run: npm run build
 
   publish-npm:
     needs: build
@@ -27,9 +27,9 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: yarn
-      - run: yarn build
-      - run: yarn publish
+      - run: npm install
+      - run: npm run build
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
@@ -44,8 +44,8 @@ jobs:
           registry-url: https://npm.pkg.github.com
           always-auth: tru
           scope: "@andrejpk"
-      - run: yarn
-      - run: yarn build
-      - run: yarn publish --verbose
+      - run: npm install
+      - run: npm run build
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
