@@ -42,7 +42,8 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com
-          always-auth: true
+          always-auth: tru
+          scope: "@andrejpk"
       - run: yarn
       - run: yarn build
       - run: yarn publish --verbose
