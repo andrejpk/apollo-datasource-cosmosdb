@@ -42,8 +42,9 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com
+          always-auth: true
       - run: yarn
       - run: yarn build
-      - run: yarn publish --non-interactive --verbose
+      - run: yarn publish --verbose
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
