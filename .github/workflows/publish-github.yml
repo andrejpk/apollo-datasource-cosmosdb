@@ -43,6 +43,6 @@ jobs:
           registry-url: $registry-url(npm)
       - run: yarn
       - run: yarn build
-      - run: yarn publish
+      - run: yarn publish --non-interactive --verbose
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
