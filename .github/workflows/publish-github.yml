@@ -2,7 +2,7 @@ name: Node.js Package
 on:
   push:
     braches:
-      - master
+      - main
 
 jobs:
   build:

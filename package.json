@@ -1,5 +1,5 @@
 {
-  "name": "@andrejpk/apollo-datasource-cosmosdb",
+  "name": "apollo-datasource-cosmosdb",
   "version": "0.0.14",
   "description": "An Apollo data source for Azure CosmosDB",
   "main": "dist/index.js",
