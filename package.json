@@ -20,7 +20,7 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "@azure/cosmos": "3.9.3",
+    "@azure/cosmos": "3.9.5",
     "@types/node": "14.14.27",
     "graphql": "15.4.0",
     "jest": "26.6.3",

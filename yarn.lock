@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@azure/cosmos@3.9.3":
-  version "3.9.3"
-  resolved "https://registry.yarnpkg.com/@azure/cosmos/-/cosmos-3.9.3.tgz#7e95ff92e5c3e9da7e8316bc50c9cc928be6c1d6"
-  integrity sha512-1mh8a6LAIykz24tJvQpafXiABUfq+HSAZBFJVZXea0Rd0qG8Ia9z8AK9FtPbC1nPvDC2RID2mRIjJvYbxRM/BA==
+"@azure/cosmos@3.9.5":
+  version "3.9.5"
+  resolved "https://registry.yarnpkg.com/@azure/cosmos/-/cosmos-3.9.5.tgz#1868b85758db54ae1938ece29fd25ffbe5bcc17c"
+  integrity sha512-4SjJFs9BvUX7bkU1Le/OkDIIG9ojcnSs8rZfa5V9MI9yreMOPgW7QMF0QlqecYERpueHH8zuWeBT7dwd8/U7xA==
   dependencies:
     "@types/debug" "^4.1.4"
     debug "^4.1.1"
