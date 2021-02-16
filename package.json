@@ -24,7 +24,7 @@
     "@azure/cosmos": "3.9.3",
     "@types/chai": "^4.2.15",
     "@types/mocha": "^8.2.0",
-    "@types/node": "14.14.10",
+    "@types/node": "14.14.27",
     "@zeit/cosmosdb-server": "^0.11.0",
     "chai": "^4.3.0",
     "graphql": "15.4.0",
