@@ -24,7 +24,7 @@ export interface CosmosQueryDbArgs {
 
 export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
-export class CosmosDataSource<TData extends { id: string }, TContext = any>
+export class CosmosDataSource<TData extends { id: string }, TContext>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
@@ -48,6 +48,7 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     { ttl, requestOptions }: QueryFindArgs = {}
   ) {
     this.options?.logger?.debug(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       `findManyByQuery: CosmosQuery: ${(query as any).query || query}`
     );
     const results = await this.container.items

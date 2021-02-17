@@ -1,6 +1,6 @@
 {
   "name": "apollo-datasource-cosmosdb",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "An Apollo data source for Azure CosmosDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,15 +17,28 @@
   ],
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "test": "ts-mocha tests/**/*.test.ts",
+    "coverage": "nyc npm test",
+    "lint": "eslint src/**/*.ts tests/**/*.ts"
   },
   "devDependencies": {
     "@azure/cosmos": "3.9.3",
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.0",
     "@types/node": "14.14.28",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "@zeit/cosmosdb-server": "^0.11.0",
+    "chai": "^4.3.0",
+    "eslint": "^7.20.0",
     "graphql": "15.4.0",
-    "jest": "26.6.3",
+    "mocha": "^8.3.0",
+    "nyc": "^15.1.0",
     "prettier": "2.2.1",
-    "typescript": "4.1.2"
+    "ts-mocha": "^8.0.0",
+    "typescript": "4.1.2",
+    "ync": "^0.0.9"
   },
   "peerDependencies": {
     "@azure/cosmos": "^3.9.3"

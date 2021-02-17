@@ -4,12 +4,20 @@ This is a CosmosDB DataSource for the Apollo GraphQL Server. It was adapted from
 
 ## Usage
 
-Use by creating a new class, inheriting from `CosmsosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API)
+Use by creating a new class, inheriting from `CosmsosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API). Use a separate DataSource for each data type.
+
+Example:
 
 `data-sources/Users.ts`
 
 ```typescript
+export interface UserDoc {
+  id: string; // a string id value is required for entities using this library
+  name: string;
+}
+
 export class UserDataSource extends CosmosDataSource<UserDoc, ApolloContext> {}
+export class PostDataSource extends CosmosDataSource<PostDoc, ApolloContext> {}
 ```
 
 `server.ts`
@@ -25,19 +33,23 @@ const cosmosClient = new CosmosClient({
 const cosmosContainer = cosmosClient.database("MyDatabase").container("Items");
 
 import UserDataSource from "./data-sources/Users.js";
+import PostDataSource from "./data-sources/Users.js";
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
     users: new UserDataSource(cosmosContainer),
+    posts: new PostDataSource(cosmosContainer),
   }),
 });
 ```
 
 ## Custom Queries
 
-CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used direclty in the resolvers, but probably better to create wrappers that hide the query details:
+CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used direclty in the resolvers, but probably better to create wrappers that hide the query details.
+
+Creating a derived class with custom query methods, you can hide all of your query logic in the DataSource class:
 
 ```typescript
 export class UserDataSource extends CosmosDataSource<UserDoc, ApolloContext> {
@@ -76,7 +88,11 @@ This DataSource has some built in mutation methods to create, update and delete 
 ```typescript
 await context.dataSources.users.createOne(userDoc);
 
-await context.dataSources.uploads.deleteOne(uploadKey);
+await context.dataSources.users.updateOne(userDoc);
+
+await context.dataSources.users.updateOnePartial(user_id, { name: "Bob" });
+
+await context.dataSources.users.deleteOne(userId);
 ```
 
 The data loader (and cache, if used) are updated after mutation operations.
@@ -91,12 +107,11 @@ Caching is available on an opt-in basis by passing a `ttl` option on queries.
 
 ## Typescript
 
-This library is written in Typescript and exports full type definitions, but usable in pure Javascript as well.
+This library is written in Typescript and exports full type definitions, but usable in pure Javascript as well. This works really well with [GraphQL Codegen's typed resolvers](https://the-guild.dev/blog/better-type-safety-for-resolvers-with-graphql-codegen).
 
 # API
 
 ```typescript
-
 const thisUser = await users.findOneById(id: string, {ttl})  // => Promise<T | undefined>
 
 const userPair = await users.findManyByIds([id1, id2], {ttl}) // => Promise<(T | undefined)[]>

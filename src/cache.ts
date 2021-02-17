@@ -1,9 +1,8 @@
-import { Container, Operation } from "@azure/cosmos";
+import { Container } from "@azure/cosmos";
 import { KeyValueCache } from "apollo-server-caching";
 import DataLoader from "dataloader";
 import { EJSON } from "bson";
 import { CosmosDataSourceOptions } from "./datasource";
-import { isArray } from "util";
 
 // https://github.com/graphql/dataloader#batch-function
 const orderDocs = <V>(ids: readonly string[]) => (
@@ -110,7 +109,7 @@ export const createCachingMethods = <DType extends { id: string }>({
      * that automatically and transparently do this
      */
     primeLoader: (docs, ttl?: number) => {
-      docs = isArray(docs) ? docs : [docs];
+      docs = Array.isArray(docs) ? docs : [docs];
       docs.forEach((doc) => {
         const key = doc.id;
         loader.prime(key, doc);
