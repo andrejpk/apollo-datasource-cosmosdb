@@ -1,4 +1,4 @@
-import { Container, Operation } from "@azure/cosmos";
+import { Container } from "@azure/cosmos";
 import { KeyValueCache } from "apollo-server-caching";
 import DataLoader from "dataloader";
 import { EJSON } from "bson";

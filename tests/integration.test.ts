@@ -1,9 +1,7 @@
-import cosmosServer from "@zeit/cosmosdb-server";
-import { CosmosClient } from "@azure/cosmos";
 import withCosmosDb from "./withCosmosDb";
 import { expect } from "chai";
 
-import { CosmosDataSource } from "../datasource";
+import { CosmosDataSource } from "../src/datasource";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -12,13 +10,15 @@ interface UserDoc {
   email: string;
 }
 
-interface Context {}
+interface Context {
+  something: string;
+}
 
 class UserDataSource extends CosmosDataSource<UserDoc, Context> {}
 
 describe("basic crud", () => {
   it(
-    "should create a doc and read it back",
+    "should create a doc and read it back, then update it, delete it",
     withCosmosDb(async (client) => {
       const { database } = await client.databases.create({
         id: "test-database",
@@ -46,7 +46,7 @@ describe("basic crud", () => {
 
       // update the user
       const newEmail = "new@example.com";
-      const user1UpdResp = await userDataSource.updateOne({
+      await userDataSource.updateOne({
         ...user1,
         email: newEmail,
       });

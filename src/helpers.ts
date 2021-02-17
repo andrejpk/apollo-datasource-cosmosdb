@@ -1,6 +1,7 @@
 import { Container } from "@azure/cosmos";
 
 export const isCosmosDbContainer = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   maybeContainer: any
 ): maybeContainer is Container => {
   // does the duck quack?
@@ -14,8 +15,8 @@ export const isCosmosDbContainer = (
 
 export type Logger = {
   // Ordered from least-severe to most-severe.
-  debug(message?: any): void;
-  info(message?: any): void;
-  warn(message?: any): void;
-  error(message?: any): void;
-}
+  debug(message?: string): void;
+  info(message?: string): void;
+  warn(message?: string): void;
+  error(message?: string): void;
+};
