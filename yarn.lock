@@ -1567,7 +1567,7 @@
     "eslint-scope" "^5.0.0"
     "eslint-utils" "^2.0.0"
 
-"@typescript-eslint/parser@^4.0.0":
+"@typescript-eslint/parser@^4.0.0", "@typescript-eslint/parser@^4.15.1":
   "integrity" "sha512-V8eXYxNJ9QmXi5ETDguB7O9diAXlIyS+e3xzLoP/oVE4WCAjssxLIa0mqCLsCGXulYJUfT+GV70Jv1vHsdKwtA=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-4.15.1.tgz"
   "version" "4.15.1"
