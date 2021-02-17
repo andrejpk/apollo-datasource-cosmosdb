@@ -88,7 +88,11 @@ This DataSource has some built in mutation methods to create, update and delete 
 ```typescript
 await context.dataSources.users.createOne(userDoc);
 
-await context.dataSources.uploads.deleteOne(uploadKey);
+await context.dataSources.users.updateOne(userDoc);
+
+await context.dataSources.users.updateOnePartial(user_id, { name: "Bob" });
+
+await context.dataSources.users.deleteOne(userId);
 ```
 
 The data loader (and cache, if used) are updated after mutation operations.
