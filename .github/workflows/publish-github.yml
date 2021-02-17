@@ -1,8 +1,5 @@
 name: Node.js Package
 on:
-  push:
-    braches:
-      - main
   pull_request:
     branches:
       - main
