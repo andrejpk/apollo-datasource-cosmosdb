@@ -32,12 +32,12 @@
     "@zeit/cosmosdb-server": "0.11.0",
     "chai": "4.3.0",
     "eslint": "7.20.0",
-    "graphql": "15.4.0",
+    "graphql": "15.5.0",
     "mocha": "8.3.0",
     "nyc": "15.1.0",
     "prettier": "2.2.1",
     "ts-mocha": "8.0.0",
-    "typescript": "4.1.2",
+    "typescript": "4.1.5",
     "ync": "0.0.9"
   },
   "peerDependencies": {
