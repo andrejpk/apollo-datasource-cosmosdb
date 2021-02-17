@@ -17,6 +17,7 @@ jobs:
           # scope: '@octocat'
       - run: npm install
       - run: npm run build
+      - run: npm run test
 
   publish-npm:
     needs: build
