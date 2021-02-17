@@ -44,8 +44,8 @@
     "@azure/cosmos": "3.9.5"
   },
   "dependencies": {
-    "apollo-datasource": "0.7.2",
-    "apollo-server-caching": "0.5.2",
+    "apollo-datasource": "0.7.3",
+    "apollo-server-caching": "0.5.3",
     "apollo-server-errors": "2.4.2",
     "bson": "4.2.0",
     "dataloader": "2.0.0"
