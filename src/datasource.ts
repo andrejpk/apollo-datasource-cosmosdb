@@ -113,7 +113,6 @@ export class CosmosDataSource<TData extends { id: string }, TContext>
 
   constructor(container: Container, options: CosmosDataSourceOptions = {}) {
     super();
-    console.log(`options: ${options.logger}`);
     options?.logger?.info(`CosmosDataSource started`);
 
     if (!isCosmosDbContainer(container)) {
