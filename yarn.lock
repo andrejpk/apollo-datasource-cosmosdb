@@ -1585,10 +1585,10 @@
     "@turf/point-to-line-distance" "6.0.0"
     "@turf/turf" "5.1.6"
 
-"@zeit/cosmosdb-server@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.npmjs.org/@zeit/cosmosdb-server/-/cosmosdb-server-0.12.0.tgz"
-  integrity sha512-kxMjKo6bSxllmNPhE+ZBQrFX9hh5lKOO5oIwbbKF5IJ6vtF+lBqxIhFuU+5Hxt7jx7+9UyUjvy+H14WusLlFwg==
+"@zeit/cosmosdb-server@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.npmjs.org/@zeit/cosmosdb-server/-/cosmosdb-server-0.12.1.tgz"
+  integrity sha512-9wl7rBffdt3QVYZJ9Obv8jz19faSippsjHEy/DakwwXlcaUaAU5wcVsvLl5dcwd3CwqK/66UDRSOi4Dsi74UmA==
   dependencies:
     "@zeit/cosmosdb-query" "0.7.0"
     big-integer "1.6.46"
