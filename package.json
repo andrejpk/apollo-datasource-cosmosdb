@@ -29,7 +29,7 @@
     "@types/node": "14.14.31",
     "@typescript-eslint/eslint-plugin": "4.17.0",
     "@typescript-eslint/parser": "4.17.0",
-    "@zeit/cosmosdb-server": "0.12.0",
+    "@zeit/cosmosdb-server": "0.12.1",
     "chai": "4.3.3",
     "eslint": "7.21.0",
     "graphql": "15.5.0",
