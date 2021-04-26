@@ -1584,10 +1584,10 @@
   resolved "https://registry.npmjs.org/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@zeit/cosmosdb-query@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.npmjs.org/@zeit/cosmosdb-query/-/cosmosdb-query-0.7.0.tgz"
-  integrity sha512-u3+kPF4Y2IDe7uQsiNI6bJ/wIwUDa/wSxNuycou5pkbZ5DDH4lT9aHtOPOYLZSdpM57i3JxGk9H118DhOhEdQA==
+"@zeit/cosmosdb-query@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.npmjs.org/@zeit/cosmosdb-query/-/cosmosdb-query-0.7.1.tgz"
+  integrity sha512-3dG7IGBy77cs7nb1Bu2Y1frBQP+mRiDpZ6aC8vEmDjytqlXIITF70QGVy1Pfvi3rzV2Cq2EZh0PZiHzCP7H/DA==
   dependencies:
     "@babel/generator" "7.6.2"
     "@babel/traverse" "7.6.2"
@@ -1595,12 +1595,12 @@
     "@turf/point-to-line-distance" "6.0.0"
     "@turf/turf" "5.1.6"
 
-"@zeit/cosmosdb-server@0.12.1":
-  version "0.12.1"
-  resolved "https://registry.npmjs.org/@zeit/cosmosdb-server/-/cosmosdb-server-0.12.1.tgz"
-  integrity sha512-9wl7rBffdt3QVYZJ9Obv8jz19faSippsjHEy/DakwwXlcaUaAU5wcVsvLl5dcwd3CwqK/66UDRSOi4Dsi74UmA==
+"@zeit/cosmosdb-server@0.13.1":
+  version "0.13.1"
+  resolved "https://registry.npmjs.org/@zeit/cosmosdb-server/-/cosmosdb-server-0.13.1.tgz"
+  integrity sha512-QZ7Yz5bVt2lrNL4IHMVgq8XCg+0tBbRVewfdkvlU9I1txAFrU2d85uKil9vZ0dTYv6S59M9mAFczuOi4UO+Ntw==
   dependencies:
-    "@zeit/cosmosdb-query" "0.7.0"
+    "@zeit/cosmosdb-query" "0.7.1"
     big-integer "1.6.46"
     int64-buffer "0.99.1007"
     lru-cache "6.0.0"
@@ -3204,9 +3204,9 @@ pkg-dir@^4.1.0:
     find-up "^4.0.0"
 
 point-in-polygon@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/point-in-polygon/-/point-in-polygon-1.0.1.tgz"
-  integrity sha1-1Ztk6P7kHElFiqyCtWcYxZV7Kvc=
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/point-in-polygon/-/point-in-polygon-1.1.0.tgz"
+  integrity sha512-3ojrFwjnnw8Q9242TzgXuTD+eKiutbzyslcq1ydfu82Db2y+Ogbmyrkpv0Hgj31qwT3lbS9+QAAO/pIQM35XRw==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
