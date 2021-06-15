@@ -108,15 +108,15 @@ export const createCachingMethods = <DType extends { id: string }>({
      * Use this when running a query outside of the findOneById/findManyByIds methos
      * that automatically and transparently do this
      */
-    primeLoader: (docs, ttl?: number) => {
+    primeLoader: async (docs, ttl?: number) => {
       docs = Array.isArray(docs) ? docs : [docs];
-      docs.forEach((doc) => {
-        const key = doc.id;
-        loader.prime(key, doc);
-        if (ttl) {
+      for (const doc of docs) {
+        loader.prime(doc.id, doc);
+        const key = cachePrefix + doc.id;
+        if (ttl || await cache.get(key)) {
           cache.set(key, EJSON.stringify(doc), { ttl });
         }
-      });
+      }
     },
     dataLoader: loader,
   };
