@@ -68,18 +68,19 @@ class CosmosDataSource extends apollo_datasource_1.DataSource {
         });
     }
     deleteOne(id) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             (_b = (_a = this.options) === null || _a === void 0 ? void 0 : _a.logger) === null || _b === void 0 ? void 0 : _b.info(`CosmosDataSource/deleteOne: deleting id: '${id}'`);
-            const response = yield this.container.item(id, id).delete();
+            const response = yield this.container.item(id, (_c = this.options) === null || _c === void 0 ? void 0 : _c.partitionKey).delete();
             yield this.deleteFromCacheById(id);
             return response;
         });
     }
     updateOne(updDoc) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.container
-                .item(updDoc.id, updDoc.id)
+                .item(updDoc.id, (_a = this.options) === null || _a === void 0 ? void 0 : _a.partitionKey)
                 .replace(updDoc);
             if (response.resource) {
                 this.primeLoader(response.resource);
@@ -88,10 +89,10 @@ class CosmosDataSource extends apollo_datasource_1.DataSource {
         });
     }
     updateOnePartial(id, contents) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             (_b = (_a = this.options) === null || _a === void 0 ? void 0 : _a.logger) === null || _b === void 0 ? void 0 : _b.debug(`Updating doc id ${id} contents: ${JSON.stringify(contents, null, "")}`);
-            const item = this.container.item(id, id);
+            const item = this.container.item(id, (_c = this.options) === null || _c === void 0 ? void 0 : _c.partitionKey);
             const docItem = yield item.read();
             const { resource } = docItem;
             const newResource = Object.assign(Object.assign(Object.assign({}, resource), contents), { id }); // don't change the ID ever

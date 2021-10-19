@@ -5,6 +5,7 @@ import { Logger } from "./helpers";
 import { CachedMethods, FindArgs } from "./cache";
 export interface CosmosDataSourceOptions {
     logger?: Logger;
+    partitionKey?: string;
 }
 export interface CosmosQueryDbArgs {
     /** Maps to CosmosDB feed/request options for parameters like maxItemCount
