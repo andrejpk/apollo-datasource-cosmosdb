@@ -1,4 +1,4 @@
-import { CosmosClient } from "@azure/cosmos";
+import { CosmosClient, Database, ContainerRequest  } from "@azure/cosmos";
 import * as net from "net";
 import cosmosDBServer from "@zeit/cosmosdb-server";
 
@@ -26,4 +26,33 @@ export default function withCosmosDBServer<R, T extends []>(
       });
     }
   };
+}
+
+export class CosmosDB {  
+  #server: net.Server
+  #database: Database
+  #client: CosmosClient
+
+  constructor() {
+    this.#server = cosmosDBServer();
+    this.#server.listen(0)
+    const { port } = this.#server.address() as net.AddressInfo;
+    this.#client = new CosmosClient({
+      endpoint: `https://localhost:${port}`,
+      key: "test-master-key",
+    });
+  }
+  async createDatabase(dbId = "test-database") {
+    this.#database = (await this.#client.databases.create({
+      id: dbId,
+    })).database;
+  }
+  async createContainer(containerRequest: ContainerRequest) {
+    return await this.#database.containers.create(
+      containerRequest
+    );
+  }
+  close() {
+    this.#server.close();
+  }
 }
