@@ -47,7 +47,7 @@
     "apollo-datasource": "0.8.0",
     "apollo-server-caching": "0.6.0",
     "apollo-server-errors": "2.5.0",
-    "bson": "4.2.3",
+    "bson": "4.6.3",
     "dataloader": "2.0.0"
   },
   "files": [
