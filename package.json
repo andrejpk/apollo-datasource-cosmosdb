@@ -26,7 +26,7 @@
     "@azure/cosmos": "3.10.3",
     "@types/chai": "4.2.18",
     "@types/mocha": "8.2.2",
-    "@types/node": "14.14.36",
+    "@types/node": "14.18.16",
     "@typescript-eslint/eslint-plugin": "5.11.0",
     "@typescript-eslint/parser": "5.11.0",
     "@zeit/cosmosdb-server": "0.13.2",
