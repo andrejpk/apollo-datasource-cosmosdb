@@ -44,11 +44,11 @@
     "@azure/cosmos": "^3.10.3"
   },
   "dependencies": {
-    "apollo-datasource": "0.8.0",
-    "apollo-server-caching": "0.6.0",
-    "apollo-server-errors": "2.5.0",
-    "bson": "4.2.3",
-    "dataloader": "2.0.0"
+    "apollo-datasource": "^3.3.1",
+    "apollo-server-caching": "^3.3.0",
+    "apollo-server-errors": "^3.3.1",
+    "bson": "^4.6.3",
+    "dataloader": "^2.1.0"
   },
   "files": [
     "/dist"
