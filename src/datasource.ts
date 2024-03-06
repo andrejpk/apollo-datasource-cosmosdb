@@ -25,7 +25,7 @@ export interface CosmosQueryDbArgs {
 
 export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
-export class CosmosDataSource<TData extends { id: string }, TContext = null>
+export class CosmosDataSource<TData extends { id: string }, TContext = any>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
