@@ -25,7 +25,8 @@ export interface CosmosQueryDbArgs {
 
 export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
-export class CosmosDataSource<TData extends { id: string }, TContext = null>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class CosmosDataSource<TData extends { id: string }, TContext = any>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
