@@ -1,6 +1,6 @@
 import { CosmosClient, Database, ContainerRequest  } from "@azure/cosmos";
 import * as net from "net";
-import cosmosDBServer from "@zeit/cosmosdb-server";
+import cosmosDBServer from "@vercel/cosmosdb-server";
 
 export default function withCosmosDBServer<R, T extends []>(
   fn: (cosmosDbClient: CosmosClient, ...args: T) => R
