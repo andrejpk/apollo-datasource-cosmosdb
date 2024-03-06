@@ -35,7 +35,7 @@
     "graphql": "^16.5.0",
     "mocha": "8.3.2",
     "nyc": "15.1.0",
-    "prettier": "2.2.1",
+    "prettier": "2.8.8",
     "ts-mocha": "8.0.0",
     "typescript": "4.2.4",
     "ync": "0.0.9"
