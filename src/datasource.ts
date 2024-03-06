@@ -7,6 +7,7 @@ import { Logger } from "./helpers";
 import { isCosmosDbContainer } from "./helpers";
 import { createCachingMethods, CachedMethods, FindArgs } from "./cache";
 
+
 export interface CosmosDataSourceOptions {
   logger?: Logger;
 }
@@ -24,7 +25,7 @@ export interface CosmosQueryDbArgs {
 
 export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
-export class CosmosDataSource<TData extends { id: string }, TContext>
+export class CosmosDataSource<TData extends { id: string }, TContext = null>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;

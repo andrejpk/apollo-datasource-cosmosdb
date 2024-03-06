@@ -16,8 +16,8 @@ export interface UserDoc {
   name: string;
 }
 
-export class UserDataSource extends CosmosDataSource<UserDoc, ApolloContext> {}
-export class PostDataSource extends CosmosDataSource<PostDoc, ApolloContext> {}
+export class UserDataSource extends CosmosDataSource<UserDoc> {}
+export class PostDataSource extends CosmosDataSource<PostDoc> {}
 ```
 
 `server.ts`
@@ -43,6 +43,20 @@ const server = new ApolloServer({
     posts: new PostDataSource(cosmosContainer),
   }),
 });
+```
+
+## Context
+
+It is often useful to define a context. See [Apollo docs on context](https://www.apollographql.com/docs/apollo-server/data/context/) To make this strongly typed, there is a second type paramater on the CosmosDbDataSource:
+
+```typescript
+interface MyQueryContext {
+  currentUserId: string
+}
+
+/////
+
+const userDataSource extends CosmosDataSource<UserDoc, MyQueryContext> {}
 ```
 
 ## Custom Queries
