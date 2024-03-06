@@ -1,6 +1,6 @@
 {
   "name": "apollo-datasource-cosmosdb",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "An Apollo data source for Azure CosmosDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
