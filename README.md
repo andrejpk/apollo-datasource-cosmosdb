@@ -4,7 +4,7 @@ This is a CosmosDB DataSource for the Apollo GraphQL Server. It was adapted from
 
 ## Usage
 
-Use by creating a new class, inheriting from `CosmsosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API). Use a separate DataSource for each data type.
+Use by creating a new class, inheriting from `CosmosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API). Use a separate DataSource for each data type.
 
 Example:
 
@@ -47,7 +47,7 @@ const server = new ApolloServer({
 
 ## Custom Queries
 
-CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used direclty in the resolvers, but probably better to create wrappers that hide the query details.
+CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used directly in the resolvers, but probably better to create wrappers that hide the query details.
 
 Creating a derived class with custom query methods, you can hide all of your query logic in the DataSource class:
 
