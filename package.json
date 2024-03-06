@@ -23,7 +23,7 @@
     "lint": "eslint src/**/*.ts tests/**/*.ts"
   },
   "devDependencies": {
-    "@azure/cosmos": "3.10.3",
+    "@azure/cosmos": "3.17.3",
     "@types/chai": "4.2.18",
     "@types/mocha": "8.2.2",
     "@types/node": "16.11.27",
