@@ -31,7 +31,7 @@
     "@typescript-eslint/parser": "5.62.0",
     "@zeit/cosmosdb-server": "0.13.2",
     "chai": "4.3.4",
-    "eslint": "8.6.0",
+    "eslint": "8.57.0",
     "graphql": "^16.5.0",
     "mocha": "8.3.2",
     "nyc": "15.1.0",
