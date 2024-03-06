@@ -1,4 +1,4 @@
-import withCosmosDb, {CosmosDB} from "./withCosmosDb";
+import withCosmosDb, { CosmosDB } from "./withCosmosDb";
 import { expect } from "chai";
 
 import { CosmosDataSource } from "../src/datasource";
@@ -69,190 +69,191 @@ describe("basic crud", () => {
   );
 });
 
-describe("partitionKey crud tests",function() {
-    let cosmosDB: CosmosDB
+describe("partitionKey crud tests", function () {
+  let cosmosDB: CosmosDB;
 
-    before(async function () {
-        cosmosDB = new CosmosDB();
-        await cosmosDB.createDatabase();
-    })
+  before(async function () {
+    cosmosDB = new CosmosDB();
+    await cosmosDB.createDatabase();
+  });
 
-    after(function() {
-      cosmosDB.close();
-    })
-    describe("with a partitionKey", function() {
-      let userDataSource: UserDataSource
-      
-      beforeEach(async function () {     
-        const { container } = await cosmosDB.createContainer({
-          id: "test-collection",
-          partitionKey: "/partitionKey",
-        });
+  after(function () {
+    cosmosDB.close();
+  });
+  describe("with a partitionKey", function () {
+    let userDataSource: UserDataSource;
 
-        userDataSource = new UserDataSource(container);
-        userDataSource.initialize({});
-      })
+    beforeEach(async function () {
+      const { container } = await cosmosDB.createContainer({
+        id: "test-collection",
+        partitionKey: "/partitionKey",
+      });
 
-      afterEach(async function () {    
-        userDataSource.container.delete();
-      })
-      
-      it("should create and find a user", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-          partitionKey: "examplePartitionKey",
-        };
+      userDataSource = new UserDataSource(container);
+      userDataSource.initialize({});
+    });
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+    afterEach(async function () {
+      userDataSource.container.delete();
+    });
 
-        // read the user by ID
-        const user1Find1Resp = await userDataSource.findOneById(user1.id);
-        expect(user1Find1Resp?.email).to.equal(user1.email);
-        expect(user1Find1Resp?.id).to.equal(user1.id);
-      })
+    it("should create and find a user", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+        partitionKey: "examplePartitionKey",
+      };
 
-      it("should create and update a user and find with query", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-          partitionKey: "examplePartitionKey",
-        };
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+      // read the user by ID
+      const user1Find1Resp = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp?.email).to.equal(user1.email);
+      expect(user1Find1Resp?.id).to.equal(user1.id);
+    });
 
-        // update the user
-        const newEmail = "new@example.com";
-        await userDataSource.updateOne({
-          ...user1,
-          email: newEmail,
-        });
+    it("should create and update a user and find with query", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+        partitionKey: "examplePartitionKey",
+      };
 
-        // read the user with a query
-        const user1FindQueryResp = await userDataSource.findManyByQuery(
-          `select * from c where c.id = '${user1.id}'`
-        );
-        expect(user1FindQueryResp.resources.length).to.equal(1);
-        expect(user1FindQueryResp.resources[0].email).to.equal(newEmail);
-      })
-      
-      it("should create and delete user", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-          partitionKey: "examplePartitionKey",
-        };
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+      // update the user
+      const newEmail = "new@example.com";
+      await userDataSource.updateOne({
+        ...user1,
+        email: newEmail,
+      });
 
-        // delete the user
-        await userDataSource.deleteOne(user1.id, user1.partitionKey);
+      // read the user with a query
+      const user1FindQueryResp = await userDataSource.findManyByQuery(
+        `select * from c where c.id = '${user1.id}'`
+      );
+      expect(user1FindQueryResp.resources.length).to.equal(1);
+      expect(user1FindQueryResp.resources[0].email).to.equal(newEmail);
+    });
 
-        // try to read the user back out (shouldn't exist)
-        const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
-        expect(user1Find1Resp2).to.equal(undefined);
-      })
-      
-      it("should create and not delete user because partitionKey isn't provided", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-          partitionKey: "examplePartitionKey",
-        };
+    it("should create and delete user", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+        partitionKey: "examplePartitionKey",
+      };
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
-        
-        // delete the user will fail because partitionKey isn't provided
-        userDataSource.deleteOne(user1.id);
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
 
-        const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
+      // delete the user
+      await userDataSource.deleteOne(user1.id, user1.partitionKey);
 
-        expect(user1Find1Resp2.id).to.equal(user1.id);
-        expect(user1Find1Resp2.email).to.equal(user1.email);
-        expect(user1Find1Resp2.partitionKey).to.equal(user1.partitionKey);
-      })
-    })
-    describe("without a partitionKey", function() {
-      let userDataSource: UserDataSource
-      
-      beforeEach(async function () {     
-        const { container } = await cosmosDB.createContainer({
-          id: "test-collection",
-        });
+      // try to read the user back out (shouldn't exist)
+      const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp2).to.equal(undefined);
+    });
 
-        userDataSource = new UserDataSource(container);
-        userDataSource.initialize({});
-      })
+    it("should create and not delete user because partitionKey isn't provided", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+        partitionKey: "examplePartitionKey",
+      };
 
-      afterEach(async function () {    
-        userDataSource.container.delete();
-      })
-      
-      it("should create and find a user", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-        };
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+      // delete the user will fail because partitionKey isn't provided
+      userDataSource.deleteOne(user1.id);
 
-        // read the user by ID
-        const user1Find1Resp = await userDataSource.findOneById(user1.id);
-        expect(user1Find1Resp?.email).to.equal(user1.email);
-        expect(user1Find1Resp?.id).to.equal(user1.id);
-      })
+      const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp2).to.not.undefined
 
-      it("should create and update a user and find with query", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-        };
+      expect(user1Find1Resp2?.id).to.equal(user1.id);
+      expect(user1Find1Resp2?.email).to.equal(user1.email);
+      expect(user1Find1Resp2?.partitionKey).to.equal(user1.partitionKey);
+    });
+  });
+  describe("without a partitionKey", function () {
+    let userDataSource: UserDataSource;
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+    beforeEach(async function () {
+      const { container } = await cosmosDB.createContainer({
+        id: "test-collection",
+      });
 
-        // update the user
-        const newEmail = "new@example.com";
-        await userDataSource.updateOne({
-          ...user1,
-          email: newEmail,
-        });
+      userDataSource = new UserDataSource(container);
+      userDataSource.initialize({});
+    });
 
-        // read the user with a query
-        const user1FindQueryResp = await userDataSource.findManyByQuery(
-          `select * from c where c.id = '${user1.id}'`
-        );
-        expect(user1FindQueryResp.resources.length).to.equal(1);
-        expect(user1FindQueryResp.resources[0].email).to.equal(newEmail);
-      })
-      
-      it("should create and delete user", async function() { 
-        const user1 = {
-          id: "us_one",
-          email: "one@example.com",
-        };
+    afterEach(async function () {
+      userDataSource.container.delete();
+    });
 
-        // create the user
-        const user1Resp = await userDataSource.createOne(user1);
-        expect(user1Resp.resource?.id).to.equal("us_one");
+    it("should create and find a user", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+      };
 
-        // delete the user
-        await userDataSource.deleteOne(user1.id);
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
 
-        // try to read the user back out (shouldn't exist)
-        const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
-        expect(user1Find1Resp2).to.equal(undefined);
-      })
-    })
-})
+      // read the user by ID
+      const user1Find1Resp = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp?.email).to.equal(user1.email);
+      expect(user1Find1Resp?.id).to.equal(user1.id);
+    });
+
+    it("should create and update a user and find with query", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+      };
+
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
+
+      // update the user
+      const newEmail = "new@example.com";
+      await userDataSource.updateOne({
+        ...user1,
+        email: newEmail,
+      });
+
+      // read the user with a query
+      const user1FindQueryResp = await userDataSource.findManyByQuery(
+        `select * from c where c.id = '${user1.id}'`
+      );
+      expect(user1FindQueryResp.resources.length).to.equal(1);
+      expect(user1FindQueryResp.resources[0].email).to.equal(newEmail);
+    });
+
+    it("should create and delete user", async function () {
+      const user1 = {
+        id: "us_one",
+        email: "one@example.com",
+      };
+
+      // create the user
+      const user1Resp = await userDataSource.createOne(user1);
+      expect(user1Resp.resource?.id).to.equal("us_one");
+
+      // delete the user
+      await userDataSource.deleteOne(user1.id);
+
+      // try to read the user back out (shouldn't exist)
+      const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp2).to.equal(undefined);
+    });
+  });
+});
