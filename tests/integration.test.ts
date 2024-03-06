@@ -174,10 +174,11 @@ describe("partitionKey crud tests", function () {
       userDataSource.deleteOne(user1.id);
 
       const user1Find1Resp2 = await userDataSource.findOneById(user1.id);
+      expect(user1Find1Resp2).to.not.undefined
 
-      expect(user1Find1Resp2.id).to.equal(user1.id);
-      expect(user1Find1Resp2.email).to.equal(user1.email);
-      expect(user1Find1Resp2.partitionKey).to.equal(user1.partitionKey);
+      expect(user1Find1Resp2?.id).to.equal(user1.id);
+      expect(user1Find1Resp2?.email).to.equal(user1.email);
+      expect(user1Find1Resp2?.partitionKey).to.equal(user1.partitionKey);
     });
   });
   describe("without a partitionKey", function () {
