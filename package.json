@@ -37,7 +37,7 @@
     "nyc": "15.1.0",
     "prettier": "3.2.5",
     "ts-mocha": "10.0.0",
-    "typescript": "4.2.4",
+    "typescript": "5.3.3",
     "ync": "0.0.9"
   },
   "peerDependencies": {
