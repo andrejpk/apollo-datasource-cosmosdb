@@ -39,7 +39,7 @@
     "prettier": "3.2.5",
     "release-it": "^17.1.1",
     "ts-mocha": "10.0.0",
-    "typescript": "5.4.4",
+    "typescript": "5.7.3",
     "ync": "0.0.9"
   },
   "peerDependencies": {
