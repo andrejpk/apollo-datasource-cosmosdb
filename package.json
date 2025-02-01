@@ -30,7 +30,7 @@
     "@types/node": "20.11.28",
     "@typescript-eslint/eslint-plugin": "7.1.1",
     "@typescript-eslint/parser": "7.1.1",
-    "@vercel/cosmosdb-server": "0.15.0",
+    "@vercel/cosmosdb-server": "0.15.1",
     "chai": "4.4.1",
     "eslint": "8.57.0",
     "graphql": "^16.8.1",
