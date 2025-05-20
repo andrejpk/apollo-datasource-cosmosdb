@@ -4,7 +4,7 @@ This is a CosmosDB DataSource for the Apollo GraphQL Server. It was adapted from
 
 ## Usage
 
-Use by creating a new class, inheriting from `CosmsosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API). Use a separate DataSource for each data type.
+Use by creating a new class, inheriting from `CosmosDataSource` passing in the CosmosDb container instance (created from the CosmosDB Javascript API). Use a separate DataSource for each data type.
 
 Example:
 
@@ -16,8 +16,8 @@ export interface UserDoc {
   name: string;
 }
 
-export class UserDataSource extends CosmosDataSource<UserDoc, ApolloContext> {}
-export class PostDataSource extends CosmosDataSource<PostDoc, ApolloContext> {}
+export class UserDataSource extends CosmosDataSource<UserDoc> {}
+export class PostDataSource extends CosmosDataSource<PostDoc> {}
 ```
 
 `server.ts`
@@ -45,9 +45,23 @@ const server = new ApolloServer({
 });
 ```
 
+## Context
+
+It is often useful to define a context. See [Apollo docs on context](https://www.apollographql.com/docs/apollo-server/data/context/) To make this strongly typed, there is a second type paramater on the CosmosDbDataSource:
+
+```typescript
+interface MyQueryContext {
+  currentUserId: string
+}
+
+/////
+
+const userDataSource extends CosmosDataSource<UserDoc, MyQueryContext> {}
+```
+
 ## Custom Queries
 
-CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used direclty in the resolvers, but probably better to create wrappers that hide the query details.
+CosmosDataSource exposes a `findManyByQuery` method that accepts a ComosDB SQL query either as a string or a `SqlQuerySpec` object containing the query and a parameter collection. This can be used directly in the resolvers, but probably better to create wrappers that hide the query details.
 
 Creating a derived class with custom query methods, you can hide all of your query logic in the DataSource class:
 
@@ -119,7 +133,7 @@ const userPair = await users.findManyByIds([id1, id2], {ttl}) // => Promise<(T |
 await users.deleteFromCacheById(id}) // => Promise<void>
 
 // query method; note that this returns the CosmosDB FeedResponse object because sometimes this extra information is useful
-const userListResponse = await users.findManyByQuery('SELECT * from c where c.type="User"', {ttl, requestOptions}) // => Promise<FeedResponse<T>>
+const userListResponse = await users.findManyByQuery('SELECT * from c where c.type="User"', {ttl, requestOptions, maxItemCount}) // => Promise<FeedResponse<T>>
 console.log(userListResponse.resources) // user array from query
 
 // create method returns the CosmosDB ItemResponse object

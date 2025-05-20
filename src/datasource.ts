@@ -7,6 +7,7 @@ import { Logger } from "./helpers";
 import { isCosmosDbContainer } from "./helpers";
 import { createCachingMethods, CachedMethods, FindArgs } from "./cache";
 
+
 export interface CosmosDataSourceOptions {
   logger?: Logger;
 }
@@ -20,11 +21,17 @@ export interface CosmosQueryDbArgs {
    * See https://docs.microsoft.com/en-us/javascript/api/%40azure/cosmos/feedoptions?view=azure-node-latest
    */
   requestOptions?: FeedOptions;
+  /** Specifies the maximum number of items to be returned per page by Cosmos DB.
+   * This is a convenience shorthand for `requestOptions: { maxItemCount: value }`.
+   * If both are provided, this top-level `maxItemCount` takes precedence.
+   */
+  maxItemCount?: number;
 }
 
 export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
-export class CosmosDataSource<TData extends { id: string }, TContext>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class CosmosDataSource<TData extends { id: string }, TContext = any>
   extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
@@ -45,15 +52,21 @@ export class CosmosDataSource<TData extends { id: string }, TContext>
    */
   async findManyByQuery(
     query: string | SqlQuerySpec,
-    { ttl, requestOptions }: QueryFindArgs = {}
+    { ttl, requestOptions, maxItemCount }: QueryFindArgs = {}
   ) {
     this.options?.logger?.debug(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       `findManyByQuery: CosmosQuery: ${(query as any).query || query}`
     );
-    const results = await this.container.items
-      .query<TData>(query, requestOptions)
-      .fetchAll();
+
+    const finalRequestOptions: FeedOptions = { ...requestOptions };
+    if (maxItemCount !== undefined) {
+      finalRequestOptions.maxItemCount = maxItemCount;
+    }
+
+    const iterator = this.container.items.query<TData>(query, finalRequestOptions);
+    const results = await iterator.fetchNext();
+
     // prime these into the dataloader and maybe the cache
     if (this.dataLoader && results.resources) {
       this.primeLoader(results.resources, ttl);

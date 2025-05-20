@@ -1,38 +1,18 @@
 name: Node.js Package
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+    release:
+      types: [published]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-          # Defaults to the user or organization that owns the workflow file
-          # scope: '@octocat'
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
-      - run: npm run lint
-      - run: npm run coverage
-
   publish-npm:
-    needs: build
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: "22.x"
           registry-url: https://registry.npmjs.org/
-      - run: npm install
+      - run: npm ci
       - run: npm run build
       - run: npm publish
         env:

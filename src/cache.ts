@@ -5,7 +5,7 @@ import { EJSON } from "bson";
 import { CosmosDataSourceOptions } from "./datasource";
 
 // https://github.com/graphql/dataloader#batch-function
-const orderDocs = <V>(ids: readonly string[]) => (
+const orderDocs = <V extends { id?: string | undefined; }>(ids: readonly string[]) => (
   docs: (V | undefined)[],
   keyFn?: (source: V) => string
 ) => {
