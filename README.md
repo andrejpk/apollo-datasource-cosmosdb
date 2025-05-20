@@ -133,7 +133,7 @@ const userPair = await users.findManyByIds([id1, id2], {ttl}) // => Promise<(T |
 await users.deleteFromCacheById(id}) // => Promise<void>
 
 // query method; note that this returns the CosmosDB FeedResponse object because sometimes this extra information is useful
-const userListResponse = await users.findManyByQuery('SELECT * from c where c.type="User"', {ttl, requestOptions}) // => Promise<FeedResponse<T>>
+const userListResponse = await users.findManyByQuery('SELECT * from c where c.type="User"', {ttl, requestOptions, maxItemCount}) // => Promise<FeedResponse<T>>
 console.log(userListResponse.resources) // user array from query
 
 // create method returns the CosmosDB ItemResponse object

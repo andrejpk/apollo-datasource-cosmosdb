@@ -69,6 +69,59 @@ describe("basic crud", () => {
   );
 });
 
+describe("pagination tests", function () {
+  let cosmosDB: CosmosDB;
+  let userDataSource: UserDataSource;
+
+  before(async function () {
+    cosmosDB = new CosmosDB();
+    await cosmosDB.createDatabase();
+    const { container } = await cosmosDB.createContainer({
+      id: "pagination-test-collection",
+    });
+    userDataSource = new UserDataSource(container);
+    userDataSource.initialize({});
+
+    // Create some initial data
+    await userDataSource.createOne({ id: "user_page_1", email: "page1@example.com" });
+    await userDataSource.createOne({ id: "user_page_2", email: "page2@example.com" });
+    await userDataSource.createOne({ id: "user_page_3", email: "page3@example.com" });
+  });
+
+  after(async function () {
+    await userDataSource.container.delete();
+    cosmosDB.close();
+  });
+
+  it("should respect maxItemCount when querying", async function () {
+    const query = "SELECT * FROM c";
+    const results = await userDataSource.findManyByQuery(query, { maxItemCount: 2 });
+
+    expect(results.resources.length).to.equal(2);
+    // Note: @vercel/cosmosdb-server might not fully implement hasMoreResults
+    // If this assertion fails, it might be a limitation of the simulator
+    expect(results.hasMoreResults).to.equal(true); 
+  });
+
+  it("should respect maxItemCount via requestOptions when querying", async function () {
+    const query = "SELECT * FROM c";
+    const results = await userDataSource.findManyByQuery(query, { requestOptions: { maxItemCount: 1 } });
+
+    expect(results.resources.length).to.equal(1);
+    // Note: @vercel/cosmosdb-server might not fully implement hasMoreResults
+    expect(results.hasMoreResults).to.equal(true);
+  });
+
+  it("should return all items if maxItemCount is larger than total items", async function () {
+    const query = "SELECT * FROM c";
+    const results = await userDataSource.findManyByQuery(query, { maxItemCount: 5 });
+
+    expect(results.resources.length).to.equal(3);
+    // In this case, hasMoreResults should be false as all items are returned
+    expect(results.hasMoreResults).to.equal(false);
+  });
+});
+
 describe("partitionKey crud tests", function () {
   let cosmosDB: CosmosDB;
 
