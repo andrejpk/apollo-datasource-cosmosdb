@@ -1,6 +1,5 @@
-import { DataSource } from "apollo-datasource";
-import { ApolloError } from "apollo-server-errors";
-import { InMemoryLRUCache, KeyValueCache } from "apollo-server-caching";
+import { GraphQLError } from "graphql";
+import { InMemoryLRUCache, KeyValueCache } from "@apollo/utils.keyvaluecache";
 import { Container, SqlQuerySpec, FeedOptions } from "@azure/cosmos";
 import { Logger } from "./helpers";
 
@@ -32,7 +31,6 @@ export type QueryFindArgs = FindArgs & CosmosQueryDbArgs;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class CosmosDataSource<TData extends { id: string }, TContext = any>
-  extends DataSource<TContext>
   implements CachedMethods<TData> {
   container: Container;
   context?: TContext;
@@ -125,11 +123,10 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
   }
 
   constructor(container: Container, options: CosmosDataSourceOptions = {}) {
-    super();
     options?.logger?.info(`CosmosDataSource started`);
 
     if (!isCosmosDbContainer(container)) {
-      throw new ApolloError(
+      throw new GraphQLError(
         "CosmosDataSource must be created with a CosmosDb container (from @azure/cosmos)"
       );
     }
