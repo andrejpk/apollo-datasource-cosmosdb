@@ -93,14 +93,14 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     this.options?.logger?.info(
       `CosmosDataSource/deleteOne: deleting id: '${id}'`
     );
-    const response = await this.container.item(id, partitionKey).delete<TData>();
+    const response = await this.container.item(id, partitionKey ?? id).delete<TData>();
     await this.deleteFromCacheById(id);
     return response;
   }
 
   async updateOne(updDoc: TData, partitionKey?: string) {
     const response = await this.container
-      .item(updDoc.id, partitionKey)
+      .item(updDoc.id, partitionKey ?? updDoc.id)
       .replace(updDoc);
     if (response.resource) {
       this.primeLoader(response.resource);
@@ -112,7 +112,7 @@ export class CosmosDataSource<TData extends { id: string }, TContext = any>
     this.options?.logger?.debug(
       `Updating doc id ${id} contents: ${JSON.stringify(contents, null, "")}`
     );
-    const item = this.container.item(id, partitionKey);
+    const item = this.container.item(id, partitionKey ?? id);
     const docItem = await item.read<TData>();
     const { resource } = docItem;
     const newResource = { ...resource, ...contents, id } as TData; // don't change the ID ever
