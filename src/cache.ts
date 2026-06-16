@@ -1,5 +1,5 @@
 import { Container } from "@azure/cosmos";
-import { KeyValueCache } from "apollo-server-caching";
+import { KeyValueCache } from "@apollo/utils.keyvaluecache";
 import DataLoader from "dataloader";
 import { EJSON } from "bson";
 import { CosmosDataSourceOptions } from "./datasource";
